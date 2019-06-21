@@ -1,0 +1,50 @@
+{
+	"info": {
+		"_postman_id": "21f5496f-dea6-4c62-89ff-07f3c28ca2b2",
+		"name": "demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "newStudent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d95a9a50-d54f-4479-9a10-12295cef3b29",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"{{in_name}}\",\n\t\"age\": {{in_age}}\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/student",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"student"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
