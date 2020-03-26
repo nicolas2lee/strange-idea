@@ -16,6 +16,11 @@ import java.io.IOException;
 
 @RestController
 public class HelloController {
+    @GetMapping("/longtest")
+    public String longtest(HttpServletRequest request) throws InterruptedException {
+        Thread.sleep(10000);
+        return "ok";
+    }
 
     @GetMapping("/test")
     public String test(HttpServletRequest request){

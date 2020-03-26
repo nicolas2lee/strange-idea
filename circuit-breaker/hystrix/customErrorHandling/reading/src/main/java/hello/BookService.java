@@ -6,7 +6,11 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.hystrix.exception.HystrixTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -39,18 +43,29 @@ public class BookService {
     }
   }*/
 
-  @HystrixCommand(
+/*  @HystrixCommand(
           fallbackMethod = "fail",
           commandProperties = {
                   @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
                     ,@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value="60")
           }
-  )
+  )*/
+@Retryable(
+        value = {HttpClientErrorException.class},
+        maxAttempts = 4, backoff = @Backoff(2000))
   public String readingList() {
     count++;
     URI uri = URI.create("http://localhost:8090/recommended");
     System.out.println("count"+count);
-    return this.restTemplate.getForObject(uri, String.class);
+    final ResponseEntity<String> stringResponseEntity;
+    try {
+      this.restTemplate.postForEntity(uri, null, String.class);
+    } catch (HttpClientErrorException e) {
+      //LOG.error(e.getResponseBodyAsString(), e);
+      //System.out.println(e.getResponseBodyAsString());
+      throw e;
+    }
+    return "";
   }
 
   public String fail(Throwable t) throws Throwable {
